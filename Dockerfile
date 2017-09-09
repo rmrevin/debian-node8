@@ -7,15 +7,16 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 ONBUILD ARG _UID
 ONBUILD ARG _GID
 
-ONBUILD RUN groupmod -g $_GID www-data \
- && usermod -u $_UID -g $_GID -s /bin/bash www-data \
+ONBUILD RUN userdel www-data \
+ && groupmod -g $_GID node \
+ && usermod -u $_UID -g $_GID -s /bin/bash node \
  && echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
 
 RUN mkdir -p /var/www/ \
  && mkdir -p /var/run/php/ \
  && mkdir -p /var/log/php/ \
  && mkdir -p /var/log/app/ \
- && chown www-data:www-data /var/www/
+ && chown node:node /var/www/
 
 RUN set -xe \
  && apt-get update -qq \
@@ -36,7 +37,7 @@ RUN set -xe \
     && gosu nobody true
 
 RUN set -xe \
- && npm install -g gulp webpack yarn bower phantomjs
+ && npm install -g yarn bower
 
 COPY supervisor.d/ /etc/supervisor/
 
