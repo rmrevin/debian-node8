@@ -12,13 +12,13 @@ ONBUILD RUN userdel www-data \
  && usermod -u $_UID -g $_GID -s /bin/bash node \
  && echo "    IdentityFile ~/.ssh/id_rsa" >> /etc/ssh/ssh_config
 
-RUN mkdir -p /var/www/ \
- && mkdir -p /var/log/app/ \
- && chown node:node /var/www/
-
 ARG GOSU_VERSION=1.10
 
 RUN set -xe \
+ && mkdir -p /var/www/ \
+ && mkdir -p /var/log/app/ \
+ && chown node:node /var/www/ \
+
  && apt-get update -qq \
  && apt-get install -y --no-install-recommends \
         apt-utils bash-completion ca-certificates gnupg2 bzip2 net-tools ssh-client \
